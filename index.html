@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crud</title>
+    <style>
+        body{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <body>
+    <h2>👨‍🏫 Cadastro de Alunos (CRUD)</h2>
+    <input type="text" id="nomeAluno" placeholder="Nome do Aluno">
+    <button onclick="adicionar()">Adicionar</button>
+
+    <ul id="lista"></ul>
+    <input type="checkbox" name="" id="tema">
+
+    <script>
+        async function listar() {
+            const res = await fetch('/alunos');
+            const dados = await res.json();
+            const lista = document.getElementById('lista');
+            lista.innerHTML = dados.map(a => `
+                <li>${a.nome} <button class="btn-del" onclick="remover(${a.id})">X</button></li>
+            `).join('');
+        }
+
+        async function adicionar() {
+            const nome = document.getElementById('nomeAluno').value;
+            await fetch('/alunos', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ nome })
+            });
+            document.getElementById('nomeAluno').value = '';
+            listar();
+        }
+
+        async function remover(id) {
+            await fetch(`/alunos/${id}`, { method: 'DELETE' });
+            listar();
+        }
+
+        listar(); // Inicia a lista ao abrir a página
+
+        const checkbox = document.getElementById('tema');
+            checkbox.addEventListener('change', function(){
+            if(checkbox.checked){
+            document.body.classList.add('dark');
+            }else{
+                document.body.classList.remove('dark');
+
+            }
+        });
+
+    </script>
+</body>
+</body>
+</html>
